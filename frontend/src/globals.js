@@ -1,5 +1,5 @@
 export const globals = {
-    baseUrl: 'http://127.0.0.1:5000/api',
+    baseUrl: 'http://127.0.0.1:8000/api',
     fetch(url, method, body) {
         const options = {
             method: method,
@@ -7,7 +7,7 @@ export const globals = {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json;charset=UTF-8",
-                "x-access-token": localStorage.getItem("access_token")
+                "Authorization": localStorage.getItem("access_token")
             },
         }
         if(body)
@@ -22,14 +22,14 @@ export const globals = {
             if(response.ok) {
                 return response
             } else if(response.status == 401) {
-                return this.fetch("/refresh", "PUT").then(res => {
+                return this.fetch("/session", "PUT").then(res => {
                     if(res.ok) {
                         return res.json()
                     } else {
                         throw "Sie müssen sich erneut anmelden"
                     }
                 }).then(data => {
-                    localStorage.setItem("access_token", data.data.access_token)
+                    localStorage.setItem("access_token", data.access_token)
                     return this.fetch(...params)
                 }).then(r => {
                     if(r.ok) 

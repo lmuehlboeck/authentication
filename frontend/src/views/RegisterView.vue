@@ -40,7 +40,7 @@ export default {
 
     methods: {
         onSubmit() {
-            this.$globals.fetch('/register', "POST", {
+            this.$globals.fetch('/account', "POST", {
                 username: this.username,
                 password: this.password
             }).then(response => {

@@ -28,7 +28,7 @@ export default {
     methods: {
         onSubmit() {
             if(this.username.length > 0 && this.password.length > 0) {
-                this.$globals.fetch('/login', "POST", {
+                this.$globals.fetch('/session', "POST", {
                     username: this.username,
                     password: this.password
                 }).then(response => {
@@ -41,7 +41,7 @@ export default {
                         throw "Etwas ist schiefgelaufen"
                     }
                 }).then(data => {
-                    localStorage.setItem("access_token", data.data.access_token)
+                    localStorage.setItem("access_token", data.access_token)
                     this.$router.push("/")
                 }).catch(err => {
                     useToast().error(err.toString())

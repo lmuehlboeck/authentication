@@ -3,7 +3,7 @@
         <div class="q-pa-md">
             <div class="bg-white shadow-4 rounded-borders q-mx-auto q-pa-lg" style="max-width: 500px">
                 <h1>Willkommen, {{ username }}!</h1>
-                <h3>Berechtigungen: {{ role }}</h3>
+                <h3>Herzliche Gratulation, Sie haben sich angemeldet! <br> Berechtigungen: {{ role }}</h3>
                 <div class="q-mt-lg row">
                     <q-btn @click="logout" label="Abmelden" class="full-width" />
                 </div>
@@ -37,11 +37,11 @@ export default {
     inject: ['$globals'],
 
     created() {
-        this.$globals.fetchAuthenticated("/check", "GET").then(response => {
+        this.$globals.fetchAuthenticated("/account", "GET").then(response => {
             return response.json()
         }).then(data => {
-            this.username = data.data.username
-            this.role = this.roles[data.data.role]
+            this.username = data.username
+            this.role = this.roles[data.role]
         }).catch(err => {
             if(localStorage.getItem("access_token"))
                 useToast().warning(err.toString())
@@ -51,7 +51,7 @@ export default {
 
     methods: {
         logout() {
-            this.$globals.fetchAuthenticated("/logout", "DELETE").then(() => {
+            this.$globals.fetchAuthenticated("/session", "DELETE").then(() => {
                 localStorage.clear()
                 useToast().success("Sie wurden abgemeldet")
             }).catch(err => {
@@ -60,7 +60,7 @@ export default {
             this.$router.push("/login")
         },
         delete_account() {
-            this.$globals.fetchAuthenticated("/delete", "DELETE").then(() => {
+            this.$globals.fetchAuthenticated("/account", "DELETE").then(() => {
                 localStorage.clear()
                 useToast().success("Ihr Account wurde gelöscht")
             }).catch(err => {
