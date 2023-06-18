@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = ["http://localhost:8080"]
+origins = ["http://localhost:8080", "http://localhost:1337", "https://account.byleo.net"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

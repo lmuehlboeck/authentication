@@ -1,5 +1,5 @@
 export const globals = {
-    baseUrl: 'http://127.0.0.1:8000/api',
+    baseUrl: 'http://localhost:1337/api',
     fetch(url, method, body) {
         const options = {
             method: method,
