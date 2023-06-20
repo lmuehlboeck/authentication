@@ -8,7 +8,7 @@
                     <q-btn @click="logout" label="Abmelden" class="full-width" />
                 </div>
                 <div class="q-mt-md row">
-                    <q-btn @click="confirm = true" color="negative" icon="delete" label="Account löschen" class="full-width" />
+                    <q-btn @click="confirm = true" color="negative" icon="delete" label="Benutzer löschen" class="full-width" />
                 </div>
             </div>
         </div>
@@ -17,12 +17,12 @@
             <q-card>
                 <q-card-section class="row items-center no-wrap">
                     <q-avatar icon="warning" color="primary" text-color="white" />
-                    <span class="q-ml-sm">Möchten Sie diesen Account wirklich unwiderruflich löschen?</span>
+                    <span class="q-ml-sm">Möchten Sie diesen Benutzer wirklich unwiderruflich löschen?</span>
                 </q-card-section>
 
                 <q-card-actions align="right">
                     <q-btn label="Abbrechen" color="primary" v-close-popup />
-                    <q-btn flat @click="delete_account" label="Löschen" color="primary" v-close-popup />
+                    <q-btn flat @click="delete_user" label="Löschen" color="primary" v-close-popup />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -33,11 +33,11 @@
 import { useToast } from "vue-toastification"
 
 export default {
-    name: 'AccountView',
+    name: 'UserView',
     inject: ['$globals'],
 
     created() {
-        this.$globals.fetchAuthenticated("/account", "GET").then(response => {
+        this.$globals.fetchAuthenticated("/user", "GET").then(response => {
             return response.json()
         }).then(data => {
             this.username = data.username
@@ -59,10 +59,10 @@ export default {
             })
             this.$router.push("/login")
         },
-        delete_account() {
-            this.$globals.fetchAuthenticated("/account", "DELETE").then(() => {
+        delete_user() {
+            this.$globals.fetchAuthenticated("/user", "DELETE").then(() => {
                 localStorage.clear()
-                useToast().success("Ihr Account wurde gelöscht")
+                useToast().success("Ihr Benutzer wurde gelöscht")
             }).catch(err => {
                 useToast().warning(err.toString())
             })

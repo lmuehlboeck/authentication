@@ -5,7 +5,7 @@
                 <div class="q-mb-lg row justify-center">
                     <img style="width: 150px; height: 150px;" ref="gif" />
                 </div>
-                <h4 class="text-center">Der Account wurde erfolgreich erstellt!</h4>
+                <h4 class="text-center">Der Benutzer wurde erfolgreich angelegt!</h4>
                 <div class="q-mt-lg row justify-center">
                     <q-btn outline color="primary" label="Zum Login" to="/login" />
                 </div>

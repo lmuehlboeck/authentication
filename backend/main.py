@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = ["http://localhost:8080", "http://localhost:1337", "https://account.byleo.net"]
+origins = ["http://localhost:8080", "http://localhost:1337", "https://auth.byleo.net"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -47,14 +47,14 @@ def create_access_token(data: dict, exp_time_min: int) -> str:
 def verify_access_token(request: Request) -> User:
     access_token = request.headers.get("Authorization")
     if not access_token:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Account required!")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Authentication required!")
     try:
         payload = jwt.decode(access_token, SECRET_KEY, ALGORITHM)
         return User(**payload)
     except (JWTError, ValidationError):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid access token!")
 
-@app.post("/api/account", status_code=status.HTTP_201_CREATED)
+@app.post("/api/user", status_code=status.HTTP_201_CREATED)
 def register(credentials: UserLogin, db: Session = Depends(get_db)):
     if 2 <= len(credentials.username) >= 32 or len(credentials.password) < 6:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid built username or password!")
@@ -68,6 +68,8 @@ def login(credentials: UserLogin, response: Response, db: Session = Depends(get_
     user = verify_user(db, credentials)
     if not user:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid username or password!")
+    if 0 > user.role < 3:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "User blocked!")
     access_token = create_access_token(dict(user), ACCESS_TOKEN_EXP_MIN)
     refresh_token = create_refresh_token(db, user, REFRESH_TOKEN_EXP_MIN)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="None", secure=True, path="/api/session")
@@ -90,12 +92,12 @@ def logout(response: Response, refresh_token: str | None = Cookie(None), user: U
     response.set_cookie(key="refresh_token", value="", httponly=True, samesite="None", secure=True, path="/api/session")
     return {"message": "Logged out successfully"}
 
-@app.get("/api/account")
+@app.get("/api/user")
 def check(user: User = Depends(verify_access_token)) -> User:
     return user
 
-@app.delete("/api/account")
-def delete_account(response: Response, user: User = Depends(verify_access_token), db: Session = Depends(get_db)):
+@app.delete("/api/user")
+def delete_user(response: Response, user: User = Depends(verify_access_token), db: Session = Depends(get_db)):
     delete_user(db, user)
     response.set_cookie(key="refresh_token", value="", httponly=True, samesite="None", secure=True, path="/api/session")
     delete_refresh_tokens_by_user(db, user)
