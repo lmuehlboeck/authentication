@@ -23,7 +23,7 @@
                             val => val === password || 'Passwort stimmt nicht überein'
                         ]" />
                     <div class="q-mt-lg row">
-                        <q-btn type="submit" color="primary" label="Registrieren" class="full-width" />
+                        <q-btn type="submit" color="primary" label="Registrieren" class="full-width" :loading="loading" />
                     </div>
                 </q-form>
             </div>
@@ -40,10 +40,12 @@ export default {
 
     methods: {
         onSubmit() {
+            this.loading = true
             this.$globals.fetch('/user', "POST", {
                 username: this.username,
                 password: this.password
             }).then(response => {
+                this.loading = false
                 if(response.ok) {
                     this.$router.push('/register/success')
                 } else if(response.status == 409) {
@@ -53,6 +55,7 @@ export default {
                     throw "Etwas ist schiefgelaufen"
                 }
             }).catch(err => {
+                this.loading = false
                 useToast().error(err.toString())
             })
         }
@@ -62,7 +65,8 @@ export default {
         return {
             username: '',
             password: '',
-            password_confirm: ''
+            password_confirm: '',
+            loading: false
         }
     }
 }

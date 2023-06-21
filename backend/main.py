@@ -19,7 +19,7 @@ if "SECRET_KEY" not in os.environ:
     os.environ["SECRET_KEY"] = uuid4().hex
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine, checkfirst=True)
 
 app = FastAPI()
 
@@ -50,7 +50,10 @@ def verify_access_token(request: Request) -> User:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Authentication required!")
     try:
         payload = jwt.decode(access_token, SECRET_KEY, ALGORITHM)
-        return User(**payload)
+        user = User(**payload)
+        if 0 >= user.role >= 2:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "User not authorized to access this resource!")
+        return user
     except (JWTError, ValidationError):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid access token!")
 
@@ -68,7 +71,7 @@ def login(credentials: UserLogin, response: Response, db: Session = Depends(get_
     user = verify_user(db, credentials)
     if not user:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid username or password!")
-    if 0 > user.role < 3:
+    if user.role < 0:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "User blocked!")
     access_token = create_access_token(dict(user), ACCESS_TOKEN_EXP_MIN)
     refresh_token = create_refresh_token(db, user, REFRESH_TOKEN_EXP_MIN)
@@ -82,10 +85,12 @@ def refresh(refresh_token: str | None = Cookie(None), db: Session = Depends(get_
     user = verify_refresh_token(db, refresh_token)
     if not user:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid refresh token!")
+    if user.role < 0:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "User blocked!")
     return {"access_token": create_access_token(user.dict(), ACCESS_TOKEN_EXP_MIN)}
 
 @app.delete("/api/session")
-def logout(response: Response, refresh_token: str | None = Cookie(None), user: User = Depends(verify_access_token), db: Session = Depends(get_db)):
+def logout(response: Response, refresh_token: str | None = Cookie(None), db: Session = Depends(get_db)):
     if not refresh_token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Refresh token missing!")
     delete_refresh_token(db, refresh_token)

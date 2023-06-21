@@ -2,8 +2,12 @@
     <main class="q-my-lg">
         <div class="q-pa-md">
             <div class="bg-white shadow-4 rounded-borders q-mx-auto q-pa-lg" style="max-width: 500px">
-                <h1>Willkommen, {{ username }}!</h1>
-                <h3>Herzliche Gratulation, Sie haben sich angemeldet! <br> Berechtigungen: {{ role }}</h3>
+                <q-skeleton type="text" class="text-h1" v-if="loading" />
+                <h1 v-if="!loading">Willkommen, {{ username }}!</h1>
+                <q-skeleton type="text" class="text-h3" v-if="loading" />
+                <h3 v-if="!loading">Herzliche Gratulation, Sie haben sich angemeldet!</h3>
+                <q-skeleton type="text" class="text-h3" v-if="loading" />
+                <h3 v-if="!loading">Berechtigungen: {{ role }}</h3>
                 <div class="q-mt-lg row">
                     <q-btn @click="logout" label="Abmelden" class="full-width" />
                 </div>
@@ -40,9 +44,11 @@ export default {
         this.$globals.fetchAuthenticated("/user", "GET").then(response => {
             return response.json()
         }).then(data => {
+            this.loading = false
             this.username = data.username
             this.role = this.roles[data.role]
         }).catch(err => {
+            this.loading = false
             if(localStorage.getItem("access_token"))
                 useToast().warning(err.toString())
             this.$router.push("/login")
@@ -75,7 +81,8 @@ export default {
             username: "",
             roles: ["Standard", "Erhöht", "Administrator"],
             role: 0,
-            confirm: false
+            confirm: false,
+            loading: true
         }
     }
 }

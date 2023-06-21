@@ -33,7 +33,7 @@ html {
   font-family: "Montserrat bold";
 }
 
-h1, h2, h3s {
+h1, h2, h3 {
   margin-top: 0 !important;
   line-height: normal !important;
 }
