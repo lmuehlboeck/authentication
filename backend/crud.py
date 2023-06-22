@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from uuid import uuid4
+import time
 
 import models, schemas
 
@@ -25,8 +26,11 @@ def create_user(db: Session, user: schemas.UserLogin):
     db.commit()
 
 def verify_user(db: Session, user: schemas.UserLogin) -> schemas.User | None:
+    time_before = time.time()*1000
     db_user = db.query(models.User).filter_by(username=user.username).first()
+    print(time.time()*1000 - time_before)
     if not db_user or not pwd_context.verify(user.password, db_user.password):
+        print(time.time()*1000 - time_before)
         return None
     else:
         return schemas.User(id=db_user.id, username=db_user.username, role=db_user.role)

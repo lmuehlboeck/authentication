@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine, checkfirst=True)
 
 app = FastAPI()
 
-origins = ["http://localhost:8080", "http://localhost:1337", "https://auth.byleo.net"]
+origins = ["http://localhost:8080", "http://localhost:8081", "http://localhost:1337", "https://auth.byleo.net"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -102,7 +102,7 @@ def check(user: User = Depends(verify_access_token)) -> User:
     return user
 
 @app.delete("/api/user")
-def delete_user(response: Response, user: User = Depends(verify_access_token), db: Session = Depends(get_db)):
+def delete_usr(response: Response, user: User = Depends(verify_access_token), db: Session = Depends(get_db)):
     delete_user(db, user)
     response.set_cookie(key="refresh_token", value="", httponly=True, samesite="None", secure=True, path="/api/session")
     delete_refresh_tokens_by_user(db, user)

@@ -2,11 +2,11 @@
     <main class="q-my-lg">
         <div class="q-pa-md">
             <div class="bg-white shadow-4 rounded-borders q-mx-auto q-pa-lg" style="max-width: 500px">
-                <q-skeleton type="text" class="text-h1" v-if="loading" />
+                <q-skeleton type="text" class="text-h2" v-if="loading" />
                 <h1 v-if="!loading">Willkommen, {{ username }}!</h1>
-                <q-skeleton type="text" class="text-h3" v-if="loading" />
+                <q-skeleton type="text" class="text-h4" v-if="loading" />
                 <h3 v-if="!loading">Herzliche Gratulation, Sie haben sich angemeldet!</h3>
-                <q-skeleton type="text" class="text-h3" v-if="loading" />
+                <q-skeleton type="text" class="text-h4" v-if="loading" />
                 <h3 v-if="!loading">Berechtigungen: {{ role }}</h3>
                 <div class="q-mt-lg row">
                     <q-btn @click="logout" label="Abmelden" class="full-width" />
@@ -20,13 +20,13 @@
         <q-dialog v-model="confirm">
             <q-card>
                 <q-card-section class="row items-center no-wrap">
-                    <q-avatar icon="warning" color="primary" text-color="white" />
+                    <q-avatar icon="warning" color="negative" text-color="white" />
                     <span class="q-ml-sm">Möchten Sie diesen Benutzer wirklich unwiderruflich löschen?</span>
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn label="Abbrechen" color="primary" v-close-popup />
-                    <q-btn flat @click="delete_user" label="Löschen" color="primary" v-close-popup />
+                    <q-btn flat label="Abbrechen" v-close-popup />
+                    <q-btn @click="delete_user" label="Löschen" color="negative" v-close-popup />
                 </q-card-actions>
             </q-card>
         </q-dialog>

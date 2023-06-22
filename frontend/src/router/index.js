@@ -8,28 +8,48 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginView,
+    meta: {
+      title: 'Login - Authentication byLeo'
+    }
   },
   {
     path: '/register',
     name: 'register',
-    component: RegisterView
+    component: RegisterView,
+    meta: {
+      title: 'Registrieren - Authentication byLeo'
+    }
   },
   {
     path: '/register/success',
     name: 'success',
-    component: RegisterSuccessView
+    component: RegisterSuccessView,
+    meta: {
+      title: 'Registrierung erfolgreich'
+    }
   },
   {
     path: '/',
     name: 'user',
-    component: UserView
+    component: UserView,
+    meta: {
+      title: 'Mein Benutzer'
+    }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const title = to.meta.title
+  if (title) {
+    document.title = title
+  }
+  next()
 })
 
 export default router

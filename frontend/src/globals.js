@@ -1,5 +1,5 @@
 export const globals = {
-    baseUrl: 'http://localhost:1337/api',
+    baseUrl: 'https://auth.byleo.net/api',
     fetch(url, method, body) {
         const options = {
             method: method,

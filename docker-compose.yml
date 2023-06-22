@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-  backend-account:
+  backend-authentication:
     build: ./backend
     command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 main:app
-    volumes:
-      - ./backend/data:/app/data
     networks:
       - web
     expose:
@@ -17,10 +15,8 @@ services:
     build:
       context: ./
       dockerfile: ./nginx/Dockerfile
-    ports:
-      - 1337:80
     depends_on:
-      - backend-account
+      - backend-authentication
     environment:
       - VIRTUAL_HOST=auth.byleo.net
       - LETSENCRYPT_HOST=auth.byleo.net
