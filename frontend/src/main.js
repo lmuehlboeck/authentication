@@ -15,13 +15,15 @@ createApp(App)
         transition: "Vue-Toastification__bounce",
         maxToasts: 20,
         newestOnTop: true,
+        toastClassName: 'custom-style',
+        bodyClassName: ['custom-style'],
         toastDefaults: {
             [TYPE.ERROR]: {
                 timeout: 6000,
                 showCloseButtonOnHover: true,
                 hideProgressBar: true,
             },
-            [TYPE.WARNING]: {
+            [TYPE.INFO]: {
                 timeout: 4500,
                 showCloseButtonOnHover: true,
                 hideProgressBar: true,

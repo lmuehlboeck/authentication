@@ -4,8 +4,8 @@
             <div class="bg-white shadow-4 rounded-borders q-mx-auto q-pa-lg" style="max-width: 500px">
                 <q-form @submit="onSubmit">
                     <q-btn-group class="q-mb-xl" style="height: 40px" spread>
-                        <q-btn color="white" text-color="black" label="Login" icon="login" to="/login" />
-                        <q-btn color="primary" label="Registrieren" icon="person_add" />
+                        <q-btn color="white" text-color="black" label="Login" icon="login" to="/login" no-wrap />
+                        <q-btn color="primary" label="Registrieren" icon="person_add" no-wrap />
                     </q-btn-group>
                     <q-input filled lazy-rules v-model="username" label="Benutzername" class="q-my-sm" hint="Maximal 30 Zeichen" ref="username"
                         :rules="[

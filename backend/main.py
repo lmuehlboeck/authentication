@@ -76,7 +76,7 @@ def login(credentials: UserLogin, response: Response, db: Session = Depends(get_
     access_token = create_access_token(dict(user), ACCESS_TOKEN_EXP_MIN)
     refresh_token = create_refresh_token(db, user, REFRESH_TOKEN_EXP_MIN)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, samesite="None", secure=True, path="/api/session")
-    return {"access_token": access_token}
+    return {"access_token": access_token, "user_role": user.role}
 
 @app.put("/api/session")
 def refresh(refresh_token: str | None = Cookie(None), db: Session = Depends(get_db)):

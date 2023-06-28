@@ -55,5 +55,10 @@ h4 {
   font-family: "Montserrat bold";
 }
 
-
+.Vue-Toastification__toast--info.custom-style {
+  background-color: var(--q-primary);
+}
+.Vue-Toastification__toast--success.custom-style {
+  background-color: var(--q-positive);
+}
 </style>
